@@ -1,4 +1,4 @@
-defmodule FilerPb.LookupDirectoryEntryRequest do
+defmodule Weedx.Filer.LookupDirectoryEntryRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -14,20 +14,20 @@ defmodule FilerPb.LookupDirectoryEntryRequest do
   field(:name, 2, type: :string)
 end
 
-defmodule FilerPb.LookupDirectoryEntryResponse do
+defmodule Weedx.Filer.LookupDirectoryEntryResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
-          entry: FilerPb.Entry.t() | nil
+          entry: Weedx.Filer.Entry.t() | nil
         }
 
   defstruct entry: nil
 
-  field(:entry, 1, type: FilerPb.Entry)
+  field(:entry, 1, type: Weedx.Filer.Entry)
 end
 
-defmodule FilerPb.ListEntriesRequest do
+defmodule Weedx.Filer.ListEntriesRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -52,20 +52,20 @@ defmodule FilerPb.ListEntriesRequest do
   field(:limit, 5, type: :uint32)
 end
 
-defmodule FilerPb.ListEntriesResponse do
+defmodule Weedx.Filer.ListEntriesResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
-          entry: FilerPb.Entry.t() | nil
+          entry: Weedx.Filer.Entry.t() | nil
         }
 
   defstruct entry: nil
 
-  field(:entry, 1, type: FilerPb.Entry)
+  field(:entry, 1, type: Weedx.Filer.Entry)
 end
 
-defmodule FilerPb.RemoteEntry do
+defmodule Weedx.Filer.RemoteEntry do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -90,7 +90,7 @@ defmodule FilerPb.RemoteEntry do
   field(:remote_size, 5, type: :int64, json_name: "remoteSize")
 end
 
-defmodule FilerPb.Entry.ExtendedEntry do
+defmodule Weedx.Filer.Entry.ExtendedEntry do
   @moduledoc false
   use Protobuf, map: true, syntax: :proto3
 
@@ -106,20 +106,20 @@ defmodule FilerPb.Entry.ExtendedEntry do
   field(:value, 2, type: :bytes)
 end
 
-defmodule FilerPb.Entry do
+defmodule Weedx.Filer.Entry do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
           name: String.t(),
           is_directory: boolean,
-          chunks: [FilerPb.FileChunk.t()],
-          attributes: FilerPb.FuseAttributes.t() | nil,
+          chunks: [Weedx.Filer.FileChunk.t()],
+          attributes: Weedx.Filer.FuseAttributes.t() | nil,
           extended: %{String.t() => binary},
           hard_link_id: binary,
           hard_link_counter: integer,
           content: binary,
-          remote_entry: FilerPb.RemoteEntry.t() | nil,
+          remote_entry: Weedx.Filer.RemoteEntry.t() | nil,
           quota: integer
         }
 
@@ -136,39 +136,39 @@ defmodule FilerPb.Entry do
 
   field(:name, 1, type: :string)
   field(:is_directory, 2, type: :bool, json_name: "isDirectory")
-  field(:chunks, 3, repeated: true, type: FilerPb.FileChunk)
-  field(:attributes, 4, type: FilerPb.FuseAttributes)
-  field(:extended, 5, repeated: true, type: FilerPb.Entry.ExtendedEntry, map: true)
+  field(:chunks, 3, repeated: true, type: Weedx.Filer.FileChunk)
+  field(:attributes, 4, type: Weedx.Filer.FuseAttributes)
+  field(:extended, 5, repeated: true, type: Weedx.Filer.Entry.ExtendedEntry, map: true)
   field(:hard_link_id, 7, type: :bytes, json_name: "hardLinkId")
   field(:hard_link_counter, 8, type: :int32, json_name: "hardLinkCounter")
   field(:content, 9, type: :bytes)
-  field(:remote_entry, 10, type: FilerPb.RemoteEntry, json_name: "remoteEntry")
+  field(:remote_entry, 10, type: Weedx.Filer.RemoteEntry, json_name: "remoteEntry")
   field(:quota, 11, type: :int64)
 end
 
-defmodule FilerPb.FullEntry do
+defmodule Weedx.Filer.FullEntry do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
           dir: String.t(),
-          entry: FilerPb.Entry.t() | nil
+          entry: Weedx.Filer.Entry.t() | nil
         }
 
   defstruct dir: "",
             entry: nil
 
   field(:dir, 1, type: :string)
-  field(:entry, 2, type: FilerPb.Entry)
+  field(:entry, 2, type: Weedx.Filer.Entry)
 end
 
-defmodule FilerPb.EventNotification do
+defmodule Weedx.Filer.EventNotification do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
-          old_entry: FilerPb.Entry.t() | nil,
-          new_entry: FilerPb.Entry.t() | nil,
+          old_entry: Weedx.Filer.Entry.t() | nil,
+          new_entry: Weedx.Filer.Entry.t() | nil,
           delete_chunks: boolean,
           new_parent_path: String.t(),
           is_from_other_cluster: boolean,
@@ -182,15 +182,15 @@ defmodule FilerPb.EventNotification do
             is_from_other_cluster: false,
             signatures: []
 
-  field(:old_entry, 1, type: FilerPb.Entry, json_name: "oldEntry")
-  field(:new_entry, 2, type: FilerPb.Entry, json_name: "newEntry")
+  field(:old_entry, 1, type: Weedx.Filer.Entry, json_name: "oldEntry")
+  field(:new_entry, 2, type: Weedx.Filer.Entry, json_name: "newEntry")
   field(:delete_chunks, 3, type: :bool, json_name: "deleteChunks")
   field(:new_parent_path, 4, type: :string, json_name: "newParentPath")
   field(:is_from_other_cluster, 5, type: :bool, json_name: "isFromOtherCluster")
   field(:signatures, 6, repeated: true, type: :int32)
 end
 
-defmodule FilerPb.FileChunk do
+defmodule Weedx.Filer.FileChunk do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -201,8 +201,8 @@ defmodule FilerPb.FileChunk do
           mtime: integer,
           e_tag: String.t(),
           source_file_id: String.t(),
-          fid: FilerPb.FileId.t() | nil,
-          source_fid: FilerPb.FileId.t() | nil,
+          fid: Weedx.Filer.FileId.t() | nil,
+          source_fid: Weedx.Filer.FileId.t() | nil,
           cipher_key: binary,
           is_compressed: boolean,
           is_chunk_manifest: boolean
@@ -226,27 +226,27 @@ defmodule FilerPb.FileChunk do
   field(:mtime, 4, type: :int64)
   field(:e_tag, 5, type: :string, json_name: "eTag")
   field(:source_file_id, 6, type: :string, json_name: "sourceFileId")
-  field(:fid, 7, type: FilerPb.FileId)
-  field(:source_fid, 8, type: FilerPb.FileId, json_name: "sourceFid")
+  field(:fid, 7, type: Weedx.Filer.FileId)
+  field(:source_fid, 8, type: Weedx.Filer.FileId, json_name: "sourceFid")
   field(:cipher_key, 9, type: :bytes, json_name: "cipherKey")
   field(:is_compressed, 10, type: :bool, json_name: "isCompressed")
   field(:is_chunk_manifest, 11, type: :bool, json_name: "isChunkManifest")
 end
 
-defmodule FilerPb.FileChunkManifest do
+defmodule Weedx.Filer.FileChunkManifest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
-          chunks: [FilerPb.FileChunk.t()]
+          chunks: [Weedx.Filer.FileChunk.t()]
         }
 
   defstruct chunks: []
 
-  field(:chunks, 1, repeated: true, type: FilerPb.FileChunk)
+  field(:chunks, 1, repeated: true, type: Weedx.Filer.FileChunk)
 end
 
-defmodule FilerPb.FileId do
+defmodule Weedx.Filer.FileId do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -265,7 +265,7 @@ defmodule FilerPb.FileId do
   field(:cookie, 3, type: :fixed32)
 end
 
-defmodule FilerPb.FuseAttributes do
+defmodule Weedx.Filer.FuseAttributes do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -326,13 +326,13 @@ defmodule FilerPb.FuseAttributes do
   field(:inode, 17, type: :uint64)
 end
 
-defmodule FilerPb.CreateEntryRequest do
+defmodule Weedx.Filer.CreateEntryRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
           directory: String.t(),
-          entry: FilerPb.Entry.t() | nil,
+          entry: Weedx.Filer.Entry.t() | nil,
           o_excl: boolean,
           is_from_other_cluster: boolean,
           signatures: [integer],
@@ -347,14 +347,14 @@ defmodule FilerPb.CreateEntryRequest do
             skip_check_parent_directory: false
 
   field(:directory, 1, type: :string)
-  field(:entry, 2, type: FilerPb.Entry)
+  field(:entry, 2, type: Weedx.Filer.Entry)
   field(:o_excl, 3, type: :bool, json_name: "oExcl")
   field(:is_from_other_cluster, 4, type: :bool, json_name: "isFromOtherCluster")
   field(:signatures, 5, repeated: true, type: :int32)
   field(:skip_check_parent_directory, 6, type: :bool, json_name: "skipCheckParentDirectory")
 end
 
-defmodule FilerPb.CreateEntryResponse do
+defmodule Weedx.Filer.CreateEntryResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -367,13 +367,13 @@ defmodule FilerPb.CreateEntryResponse do
   field(:error, 1, type: :string)
 end
 
-defmodule FilerPb.UpdateEntryRequest do
+defmodule Weedx.Filer.UpdateEntryRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
           directory: String.t(),
-          entry: FilerPb.Entry.t() | nil,
+          entry: Weedx.Filer.Entry.t() | nil,
           is_from_other_cluster: boolean,
           signatures: [integer]
         }
@@ -384,12 +384,12 @@ defmodule FilerPb.UpdateEntryRequest do
             signatures: []
 
   field(:directory, 1, type: :string)
-  field(:entry, 2, type: FilerPb.Entry)
+  field(:entry, 2, type: Weedx.Filer.Entry)
   field(:is_from_other_cluster, 3, type: :bool, json_name: "isFromOtherCluster")
   field(:signatures, 4, repeated: true, type: :int32)
 end
 
-defmodule FilerPb.UpdateEntryResponse do
+defmodule Weedx.Filer.UpdateEntryResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -398,14 +398,14 @@ defmodule FilerPb.UpdateEntryResponse do
   defstruct []
 end
 
-defmodule FilerPb.AppendToEntryRequest do
+defmodule Weedx.Filer.AppendToEntryRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
           directory: String.t(),
           entry_name: String.t(),
-          chunks: [FilerPb.FileChunk.t()]
+          chunks: [Weedx.Filer.FileChunk.t()]
         }
 
   defstruct directory: "",
@@ -414,10 +414,10 @@ defmodule FilerPb.AppendToEntryRequest do
 
   field(:directory, 1, type: :string)
   field(:entry_name, 2, type: :string, json_name: "entryName")
-  field(:chunks, 3, repeated: true, type: FilerPb.FileChunk)
+  field(:chunks, 3, repeated: true, type: Weedx.Filer.FileChunk)
 end
 
-defmodule FilerPb.AppendToEntryResponse do
+defmodule Weedx.Filer.AppendToEntryResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -426,7 +426,7 @@ defmodule FilerPb.AppendToEntryResponse do
   defstruct []
 end
 
-defmodule FilerPb.DeleteEntryRequest do
+defmodule Weedx.Filer.DeleteEntryRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -457,7 +457,7 @@ defmodule FilerPb.DeleteEntryRequest do
   field(:signatures, 8, repeated: true, type: :int32)
 end
 
-defmodule FilerPb.DeleteEntryResponse do
+defmodule Weedx.Filer.DeleteEntryResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -470,7 +470,7 @@ defmodule FilerPb.DeleteEntryResponse do
   field(:error, 1, type: :string)
 end
 
-defmodule FilerPb.AtomicRenameEntryRequest do
+defmodule Weedx.Filer.AtomicRenameEntryRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -495,7 +495,7 @@ defmodule FilerPb.AtomicRenameEntryRequest do
   field(:signatures, 5, repeated: true, type: :int32)
 end
 
-defmodule FilerPb.AtomicRenameEntryResponse do
+defmodule Weedx.Filer.AtomicRenameEntryResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -504,7 +504,7 @@ defmodule FilerPb.AtomicRenameEntryResponse do
   defstruct []
 end
 
-defmodule FilerPb.StreamRenameEntryRequest do
+defmodule Weedx.Filer.StreamRenameEntryRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -529,13 +529,13 @@ defmodule FilerPb.StreamRenameEntryRequest do
   field(:signatures, 5, repeated: true, type: :int32)
 end
 
-defmodule FilerPb.StreamRenameEntryResponse do
+defmodule Weedx.Filer.StreamRenameEntryResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
           directory: String.t(),
-          event_notification: FilerPb.EventNotification.t() | nil,
+          event_notification: Weedx.Filer.EventNotification.t() | nil,
           ts_ns: integer
         }
 
@@ -544,11 +544,16 @@ defmodule FilerPb.StreamRenameEntryResponse do
             ts_ns: 0
 
   field(:directory, 1, type: :string)
-  field(:event_notification, 2, type: FilerPb.EventNotification, json_name: "eventNotification")
+
+  field(:event_notification, 2,
+    type: Weedx.Filer.EventNotification,
+    json_name: "eventNotification"
+  )
+
   field(:ts_ns, 3, type: :int64, json_name: "tsNs")
 end
 
-defmodule FilerPb.AssignVolumeRequest do
+defmodule Weedx.Filer.AssignVolumeRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -585,7 +590,7 @@ defmodule FilerPb.AssignVolumeRequest do
   field(:disk_type, 8, type: :string, json_name: "diskType")
 end
 
-defmodule FilerPb.AssignVolumeResponse do
+defmodule Weedx.Filer.AssignVolumeResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -596,7 +601,7 @@ defmodule FilerPb.AssignVolumeResponse do
           collection: String.t(),
           replication: String.t(),
           error: String.t(),
-          location: FilerPb.Location.t() | nil
+          location: Weedx.Filer.Location.t() | nil
         }
 
   defstruct file_id: "",
@@ -613,10 +618,10 @@ defmodule FilerPb.AssignVolumeResponse do
   field(:collection, 6, type: :string)
   field(:replication, 7, type: :string)
   field(:error, 8, type: :string)
-  field(:location, 9, type: FilerPb.Location)
+  field(:location, 9, type: Weedx.Filer.Location)
 end
 
-defmodule FilerPb.LookupVolumeRequest do
+defmodule Weedx.Filer.LookupVolumeRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -629,20 +634,20 @@ defmodule FilerPb.LookupVolumeRequest do
   field(:volume_ids, 1, repeated: true, type: :string, json_name: "volumeIds")
 end
 
-defmodule FilerPb.Locations do
+defmodule Weedx.Filer.Locations do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
-          locations: [FilerPb.Location.t()]
+          locations: [Weedx.Filer.Location.t()]
         }
 
   defstruct locations: []
 
-  field(:locations, 1, repeated: true, type: FilerPb.Location)
+  field(:locations, 1, repeated: true, type: Weedx.Filer.Location)
 end
 
-defmodule FilerPb.Location do
+defmodule Weedx.Filer.Location do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -661,41 +666,41 @@ defmodule FilerPb.Location do
   field(:grpc_port, 3, type: :uint32, json_name: "grpcPort")
 end
 
-defmodule FilerPb.LookupVolumeResponse.LocationsMapEntry do
+defmodule Weedx.Filer.LookupVolumeResponse.LocationsMapEntry do
   @moduledoc false
   use Protobuf, map: true, syntax: :proto3
 
   @type t :: %__MODULE__{
           key: String.t(),
-          value: FilerPb.Locations.t() | nil
+          value: Weedx.Filer.Locations.t() | nil
         }
 
   defstruct key: "",
             value: nil
 
   field(:key, 1, type: :string)
-  field(:value, 2, type: FilerPb.Locations)
+  field(:value, 2, type: Weedx.Filer.Locations)
 end
 
-defmodule FilerPb.LookupVolumeResponse do
+defmodule Weedx.Filer.LookupVolumeResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
-          locations_map: %{String.t() => FilerPb.Locations.t() | nil}
+          locations_map: %{String.t() => Weedx.Filer.Locations.t() | nil}
         }
 
   defstruct locations_map: %{}
 
   field(:locations_map, 1,
     repeated: true,
-    type: FilerPb.LookupVolumeResponse.LocationsMapEntry,
+    type: Weedx.Filer.LookupVolumeResponse.LocationsMapEntry,
     json_name: "locationsMap",
     map: true
   )
 end
 
-defmodule FilerPb.Collection do
+defmodule Weedx.Filer.Collection do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -708,7 +713,7 @@ defmodule FilerPb.Collection do
   field(:name, 1, type: :string)
 end
 
-defmodule FilerPb.CollectionListRequest do
+defmodule Weedx.Filer.CollectionListRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -724,20 +729,20 @@ defmodule FilerPb.CollectionListRequest do
   field(:include_ec_volumes, 2, type: :bool, json_name: "includeEcVolumes")
 end
 
-defmodule FilerPb.CollectionListResponse do
+defmodule Weedx.Filer.CollectionListResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
-          collections: [FilerPb.Collection.t()]
+          collections: [Weedx.Filer.Collection.t()]
         }
 
   defstruct collections: []
 
-  field(:collections, 1, repeated: true, type: FilerPb.Collection)
+  field(:collections, 1, repeated: true, type: Weedx.Filer.Collection)
 end
 
-defmodule FilerPb.DeleteCollectionRequest do
+defmodule Weedx.Filer.DeleteCollectionRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -750,7 +755,7 @@ defmodule FilerPb.DeleteCollectionRequest do
   field(:collection, 1, type: :string)
 end
 
-defmodule FilerPb.DeleteCollectionResponse do
+defmodule Weedx.Filer.DeleteCollectionResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -759,7 +764,7 @@ defmodule FilerPb.DeleteCollectionResponse do
   defstruct []
 end
 
-defmodule FilerPb.StatisticsRequest do
+defmodule Weedx.Filer.StatisticsRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -781,7 +786,7 @@ defmodule FilerPb.StatisticsRequest do
   field(:disk_type, 4, type: :string, json_name: "diskType")
 end
 
-defmodule FilerPb.StatisticsResponse do
+defmodule Weedx.Filer.StatisticsResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -800,7 +805,7 @@ defmodule FilerPb.StatisticsResponse do
   field(:file_count, 6, type: :uint64, json_name: "fileCount")
 end
 
-defmodule FilerPb.GetFilerConfigurationRequest do
+defmodule Weedx.Filer.GetFilerConfigurationRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -809,7 +814,7 @@ defmodule FilerPb.GetFilerConfigurationRequest do
   defstruct []
 end
 
-defmodule FilerPb.GetFilerConfigurationResponse do
+defmodule Weedx.Filer.GetFilerConfigurationResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -852,7 +857,7 @@ defmodule FilerPb.GetFilerConfigurationResponse do
   field(:cluster_id, 12, type: :string, json_name: "clusterId")
 end
 
-defmodule FilerPb.SubscribeMetadataRequest do
+defmodule Weedx.Filer.SubscribeMetadataRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -880,13 +885,13 @@ defmodule FilerPb.SubscribeMetadataRequest do
   field(:client_id, 7, type: :int32, json_name: "clientId")
 end
 
-defmodule FilerPb.SubscribeMetadataResponse do
+defmodule Weedx.Filer.SubscribeMetadataResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
           directory: String.t(),
-          event_notification: FilerPb.EventNotification.t() | nil,
+          event_notification: Weedx.Filer.EventNotification.t() | nil,
           ts_ns: integer
         }
 
@@ -895,11 +900,16 @@ defmodule FilerPb.SubscribeMetadataResponse do
             ts_ns: 0
 
   field(:directory, 1, type: :string)
-  field(:event_notification, 2, type: FilerPb.EventNotification, json_name: "eventNotification")
+
+  field(:event_notification, 2,
+    type: Weedx.Filer.EventNotification,
+    json_name: "eventNotification"
+  )
+
   field(:ts_ns, 3, type: :int64, json_name: "tsNs")
 end
 
-defmodule FilerPb.LogEntry do
+defmodule Weedx.Filer.LogEntry do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -918,7 +928,7 @@ defmodule FilerPb.LogEntry do
   field(:data, 3, type: :bytes)
 end
 
-defmodule FilerPb.KeepConnectedRequest do
+defmodule Weedx.Filer.KeepConnectedRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -937,7 +947,7 @@ defmodule FilerPb.KeepConnectedRequest do
   field(:resources, 3, repeated: true, type: :string)
 end
 
-defmodule FilerPb.KeepConnectedResponse do
+defmodule Weedx.Filer.KeepConnectedResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -946,7 +956,7 @@ defmodule FilerPb.KeepConnectedResponse do
   defstruct []
 end
 
-defmodule FilerPb.LocateBrokerRequest do
+defmodule Weedx.Filer.LocateBrokerRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -959,7 +969,7 @@ defmodule FilerPb.LocateBrokerRequest do
   field(:resource, 1, type: :string)
 end
 
-defmodule FilerPb.LocateBrokerResponse.Resource do
+defmodule Weedx.Filer.LocateBrokerResponse.Resource do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -975,23 +985,23 @@ defmodule FilerPb.LocateBrokerResponse.Resource do
   field(:resource_count, 2, type: :int32, json_name: "resourceCount")
 end
 
-defmodule FilerPb.LocateBrokerResponse do
+defmodule Weedx.Filer.LocateBrokerResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
           found: boolean,
-          resources: [FilerPb.LocateBrokerResponse.Resource.t()]
+          resources: [Weedx.Filer.LocateBrokerResponse.Resource.t()]
         }
 
   defstruct found: false,
             resources: []
 
   field(:found, 1, type: :bool)
-  field(:resources, 2, repeated: true, type: FilerPb.LocateBrokerResponse.Resource)
+  field(:resources, 2, repeated: true, type: Weedx.Filer.LocateBrokerResponse.Resource)
 end
 
-defmodule FilerPb.KvGetRequest do
+defmodule Weedx.Filer.KvGetRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -1004,7 +1014,7 @@ defmodule FilerPb.KvGetRequest do
   field(:key, 1, type: :bytes)
 end
 
-defmodule FilerPb.KvGetResponse do
+defmodule Weedx.Filer.KvGetResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -1020,7 +1030,7 @@ defmodule FilerPb.KvGetResponse do
   field(:error, 2, type: :string)
 end
 
-defmodule FilerPb.KvPutRequest do
+defmodule Weedx.Filer.KvPutRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -1036,7 +1046,7 @@ defmodule FilerPb.KvPutRequest do
   field(:value, 2, type: :bytes)
 end
 
-defmodule FilerPb.KvPutResponse do
+defmodule Weedx.Filer.KvPutResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -1049,7 +1059,7 @@ defmodule FilerPb.KvPutResponse do
   field(:error, 1, type: :string)
 end
 
-defmodule FilerPb.FilerConf.PathConf do
+defmodule Weedx.Filer.FilerConf.PathConf do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -1092,23 +1102,23 @@ defmodule FilerPb.FilerConf.PathConf do
   field(:data_node, 11, type: :string, json_name: "dataNode")
 end
 
-defmodule FilerPb.FilerConf do
+defmodule Weedx.Filer.FilerConf do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
           version: integer,
-          locations: [FilerPb.FilerConf.PathConf.t()]
+          locations: [Weedx.Filer.FilerConf.PathConf.t()]
         }
 
   defstruct version: 0,
             locations: []
 
   field(:version, 1, type: :int32)
-  field(:locations, 2, repeated: true, type: FilerPb.FilerConf.PathConf)
+  field(:locations, 2, repeated: true, type: Weedx.Filer.FilerConf.PathConf)
 end
 
-defmodule FilerPb.CacheRemoteObjectToLocalClusterRequest do
+defmodule Weedx.Filer.CacheRemoteObjectToLocalClusterRequest do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
@@ -1124,91 +1134,103 @@ defmodule FilerPb.CacheRemoteObjectToLocalClusterRequest do
   field(:name, 2, type: :string)
 end
 
-defmodule FilerPb.CacheRemoteObjectToLocalClusterResponse do
+defmodule Weedx.Filer.CacheRemoteObjectToLocalClusterResponse do
   @moduledoc false
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
-          entry: FilerPb.Entry.t() | nil
+          entry: Weedx.Filer.Entry.t() | nil
         }
 
   defstruct entry: nil
 
-  field(:entry, 1, type: FilerPb.Entry)
+  field(:entry, 1, type: Weedx.Filer.Entry)
 end
 
-defmodule FilerPb.SeaweedFiler.Service do
+defmodule Weedx.Filer.SeaweedFiler.Service do
   @moduledoc false
   use GRPC.Service, name: "filer_pb.SeaweedFiler"
 
   rpc(
     :LookupDirectoryEntry,
-    FilerPb.LookupDirectoryEntryRequest,
-    FilerPb.LookupDirectoryEntryResponse
+    Weedx.Filer.LookupDirectoryEntryRequest,
+    Weedx.Filer.LookupDirectoryEntryResponse
   )
 
-  rpc(:ListEntries, FilerPb.ListEntriesRequest, stream(FilerPb.ListEntriesResponse))
+  rpc(:ListEntries, Weedx.Filer.ListEntriesRequest, stream(Weedx.Filer.ListEntriesResponse))
 
-  rpc(:CreateEntry, FilerPb.CreateEntryRequest, FilerPb.CreateEntryResponse)
+  rpc(:CreateEntry, Weedx.Filer.CreateEntryRequest, Weedx.Filer.CreateEntryResponse)
 
-  rpc(:UpdateEntry, FilerPb.UpdateEntryRequest, FilerPb.UpdateEntryResponse)
+  rpc(:UpdateEntry, Weedx.Filer.UpdateEntryRequest, Weedx.Filer.UpdateEntryResponse)
 
-  rpc(:AppendToEntry, FilerPb.AppendToEntryRequest, FilerPb.AppendToEntryResponse)
+  rpc(:AppendToEntry, Weedx.Filer.AppendToEntryRequest, Weedx.Filer.AppendToEntryResponse)
 
-  rpc(:DeleteEntry, FilerPb.DeleteEntryRequest, FilerPb.DeleteEntryResponse)
+  rpc(:DeleteEntry, Weedx.Filer.DeleteEntryRequest, Weedx.Filer.DeleteEntryResponse)
 
-  rpc(:AtomicRenameEntry, FilerPb.AtomicRenameEntryRequest, FilerPb.AtomicRenameEntryResponse)
+  rpc(
+    :AtomicRenameEntry,
+    Weedx.Filer.AtomicRenameEntryRequest,
+    Weedx.Filer.AtomicRenameEntryResponse
+  )
 
   rpc(
     :StreamRenameEntry,
-    FilerPb.StreamRenameEntryRequest,
-    stream(FilerPb.StreamRenameEntryResponse)
+    Weedx.Filer.StreamRenameEntryRequest,
+    stream(Weedx.Filer.StreamRenameEntryResponse)
   )
 
-  rpc(:AssignVolume, FilerPb.AssignVolumeRequest, FilerPb.AssignVolumeResponse)
+  rpc(:AssignVolume, Weedx.Filer.AssignVolumeRequest, Weedx.Filer.AssignVolumeResponse)
 
-  rpc(:LookupVolume, FilerPb.LookupVolumeRequest, FilerPb.LookupVolumeResponse)
+  rpc(:LookupVolume, Weedx.Filer.LookupVolumeRequest, Weedx.Filer.LookupVolumeResponse)
 
-  rpc(:CollectionList, FilerPb.CollectionListRequest, FilerPb.CollectionListResponse)
+  rpc(:CollectionList, Weedx.Filer.CollectionListRequest, Weedx.Filer.CollectionListResponse)
 
-  rpc(:DeleteCollection, FilerPb.DeleteCollectionRequest, FilerPb.DeleteCollectionResponse)
+  rpc(
+    :DeleteCollection,
+    Weedx.Filer.DeleteCollectionRequest,
+    Weedx.Filer.DeleteCollectionResponse
+  )
 
-  rpc(:Statistics, FilerPb.StatisticsRequest, FilerPb.StatisticsResponse)
+  rpc(:Statistics, Weedx.Filer.StatisticsRequest, Weedx.Filer.StatisticsResponse)
 
   rpc(
     :GetFilerConfiguration,
-    FilerPb.GetFilerConfigurationRequest,
-    FilerPb.GetFilerConfigurationResponse
+    Weedx.Filer.GetFilerConfigurationRequest,
+    Weedx.Filer.GetFilerConfigurationResponse
   )
 
   rpc(
     :SubscribeMetadata,
-    FilerPb.SubscribeMetadataRequest,
-    stream(FilerPb.SubscribeMetadataResponse)
+    Weedx.Filer.SubscribeMetadataRequest,
+    stream(Weedx.Filer.SubscribeMetadataResponse)
   )
 
   rpc(
     :SubscribeLocalMetadata,
-    FilerPb.SubscribeMetadataRequest,
-    stream(FilerPb.SubscribeMetadataResponse)
+    Weedx.Filer.SubscribeMetadataRequest,
+    stream(Weedx.Filer.SubscribeMetadataResponse)
   )
 
-  rpc(:KeepConnected, stream(FilerPb.KeepConnectedRequest), stream(FilerPb.KeepConnectedResponse))
+  rpc(
+    :KeepConnected,
+    stream(Weedx.Filer.KeepConnectedRequest),
+    stream(Weedx.Filer.KeepConnectedResponse)
+  )
 
-  rpc(:LocateBroker, FilerPb.LocateBrokerRequest, FilerPb.LocateBrokerResponse)
+  rpc(:LocateBroker, Weedx.Filer.LocateBrokerRequest, Weedx.Filer.LocateBrokerResponse)
 
-  rpc(:KvGet, FilerPb.KvGetRequest, FilerPb.KvGetResponse)
+  rpc(:KvGet, Weedx.Filer.KvGetRequest, Weedx.Filer.KvGetResponse)
 
-  rpc(:KvPut, FilerPb.KvPutRequest, FilerPb.KvPutResponse)
+  rpc(:KvPut, Weedx.Filer.KvPutRequest, Weedx.Filer.KvPutResponse)
 
   rpc(
     :CacheRemoteObjectToLocalCluster,
-    FilerPb.CacheRemoteObjectToLocalClusterRequest,
-    FilerPb.CacheRemoteObjectToLocalClusterResponse
+    Weedx.Filer.CacheRemoteObjectToLocalClusterRequest,
+    Weedx.Filer.CacheRemoteObjectToLocalClusterResponse
   )
 end
 
-defmodule FilerPb.SeaweedFiler.Stub do
+defmodule Weedx.Filer.SeaweedFiler.Stub do
   @moduledoc false
-  use GRPC.Stub, service: FilerPb.SeaweedFiler.Service
+  use GRPC.Stub, service: Weedx.Filer.SeaweedFiler.Service
 end
