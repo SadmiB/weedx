@@ -1,0 +1,12 @@
+version: 2
+updates:
+- package-ecosystem: mix
+  directory: "/"
+  schedule:
+    interval: weekly
+    timezone: Eire
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: quantum
+    versions:
+    - "> 2.4.0"

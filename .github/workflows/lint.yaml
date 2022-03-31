@@ -1,0 +1,45 @@
+name: lint
+on: [push]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: lint ${{matrix.dir}}
+    strategy:
+      matrix:
+        elixir: ['1.12.2']
+        otp: ['24']
+    steps:
+      - uses: actions/checkout@v2
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          elixir-version: ${{matrix.elixir}}
+
+      - uses: actions/cache@v2
+        id: deps-cache
+        with:
+          path: |
+            ${{matrix.dir}}/deps
+            ${{matrix.dir}}/_build
+          key: ${{ runner.os }}-mix-${{matrix.dir}}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-${{ matrix.dir }}
+
+      - if: steps.deps-cache.outputs.cache-hit != 'true'
+        run: mix deps.get
+        working-directory: ${{ matrix.dir }}
+
+      - if: steps.deps-cache.outputs.cache-hit != 'true'
+        run: mix deps.compile
+        working-directory: ${{ matrix.dir }}
+
+
+      - run: mix compile --warnings-as-errors
+        working-directory: ${{ matrix.dir }}
+
+      - run: mix format --check-formatted
+        working-directory: ${{ matrix.dir }}
+
+      - if: ${{ matrix.dir == 'evercam_api' }}
+        run: mix credo
+        working-directory: ${{ matrix.dir }}
