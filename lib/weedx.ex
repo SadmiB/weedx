@@ -1,18 +1,18 @@
 defmodule Weedx do
   @moduledoc """
-  Documentation for `Weedx`.
+  A client library for [seaweedfs](https://github.com/chrislusf/seaweedfs) filer.
   """
 
-  @doc """
-  Hello world.
+  use Application
 
-  ## Examples
+  @doc false
+  @impl Application
+  def start(_type, _args) do
+    children = [
+      Weedx.Connection
+    ]
 
-      iex> Weedx.hello()
-      :world
-
-  """
-  def hello do
-    :world
+    opts = [strategy: :one_for_one, name: Weedx.Supervisor]
+    Supervisor.start_link(children, opts)
   end
 end
