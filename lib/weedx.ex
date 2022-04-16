@@ -24,6 +24,24 @@ defmodule Weedx do
     end
   end
 
+  def rename_file(old_name, new_name, config_override \\ []) do
+    conn =
+      config_override
+      |> Config.new()
+      |> get_connection()
+
+    request =
+      Filer.AtomicRenameEntryRequest.new!(%{
+        old_name: old_name,
+        new_name: new_name
+      })
+
+    case Filer.SeaweedFiler.Stub.atomic_rename_entry(conn, request) do
+      {:ok, %Weedx.Filer.AtomicRenameEntryResponse{}} -> :ok
+      error -> error
+    end
+  end
+
   defp get_connection(config) do
     with host <- config[:host],
          port <- config[:grpc_port],
