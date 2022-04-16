@@ -8,9 +8,9 @@ defmodule Weedx do
   alias Weedx.Filer.{ListEntriesRequest, ListEntriesResponse, SeaweedFiler}
   alias Weedx.{Config, Connection}
 
-  @spec list_directories(String.t(), Keyword.t()) ::
+  @spec list_directory(String.t(), Keyword.t()) ::
           list(ListEntriesResponse.t()) | {:error, GRPC.RPCError.t()}
-  def list_directories(path, config_override \\ []) do
+  def list_directory(path, config_override \\ []) do
     conn =
       config_override
       |> Config.new()
