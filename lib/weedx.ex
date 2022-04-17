@@ -5,21 +5,27 @@ defmodule Weedx do
 
   use Application
 
-  alias Weedx.Filer.{ListEntriesRequest, ListEntriesResponse, SeaweedFiler}
+  alias Weedx.Filer.{Entry, ListEntriesRequest, SeaweedFiler}
   alias Weedx.{Config, Connection}
 
-  @spec list_directory(String.t(), Keyword.t()) ::
-          list(ListEntriesResponse.t()) | {:error, GRPC.RPCError.t()}
-  def list_directory(path, config_override \\ []) do
+  @spec list_directory(ListEntriesRequest.t(), Keyword.t()) ::
+          list(Entry.t()) | {:error, GRPC.RPCError.t()}
+  def list_directory(request, config_override \\ []) do
+    request
+    |> stream_directory(config_override)
+    |> Enum.to_list()
+  end
+
+  @spec stream_directory(ListEntriesRequest.t(), Keyword.t()) ::
+          list(Entry) | {:error, GRPC.RPCError.t()}
+  def stream_directory(request, config_overrides \\ []) do
     conn =
-      config_override
+      config_overrides
       |> Config.new()
       |> get_connection()
 
-    request = ListEntriesRequest.new!(%{directory: path})
-
     case SeaweedFiler.Stub.list_entries(conn, request) do
-      {:ok, stream} -> Enum.map(stream, fn {:ok, reply} -> reply end)
+      {:ok, stream} -> Stream.map(stream, fn {:ok, reply} -> reply.entry end)
       error -> error
     end
   end
