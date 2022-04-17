@@ -26,18 +26,17 @@ jobs:
             ${{ runner.os }}-mix-${{ matrix.dir }}
 
       - if: steps.deps-cache.outputs.cache-hit != 'true'
-        run: mix deps.get
         working-directory: ${{ matrix.dir }}
-
-      - if: steps.deps-cache.outputs.cache-hit != 'true'
-        run: mix deps.compile
-        working-directory: ${{ matrix.dir }}
-
-
-      - run: mix compile --warnings-as-errors
-        working-directory: ${{ matrix.dir }}
+        run: |
+          mix local.rebar --force
+          mix local.hex --force
+          mix deps.get
+          mix deps.compile
 
       - run: mix format --check-formatted
+        working-directory: ${{ matrix.dir }}
+
+      - run: mix compile --warnings-as-errors
         working-directory: ${{ matrix.dir }}
 
       - run: mix credo
