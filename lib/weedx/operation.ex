@@ -3,7 +3,7 @@ defmodule Weedx.Operation do
   A helper module to construct requests to feed to `Weedx` functions.
   """
 
-  alias Weedx.Filer.ListEntriesRequest
+  alias Weedx.Filer.{ListEntriesRequest, AtomicRenameEntryRequest}
 
   @type list_entries_opts :: [
           {:limit, non_neg_integer()}
@@ -27,6 +27,21 @@ defmodule Weedx.Operation do
       limit: Keyword.get(opts, :limit),
       startFromFileName: Keyword.get(opts, :last_file_name),
       inclusiveStartFrom: false
+    })
+  end
+
+  @spec move_request(String.t(), String.t()) :: AtomicRenameEntryResponse.t()
+  def move_request(old_path, new_path) do
+    old_dir = Path.dirname(old_path)
+    old_name = Path.basename(old_path)
+    new_dir = Path.dirname(new_path)
+    new_name = Path.basename(new_path)
+
+    AtomicRenameEntryRequest.new!(%{
+      old_directory: old_dir,
+      old_name: old_name,
+      new_directory: new_dir,
+      new_name: new_name
     })
   end
 end
