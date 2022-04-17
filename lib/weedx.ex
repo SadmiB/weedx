@@ -17,9 +17,9 @@ defmodule Weedx do
 
   @spec list_directory(ListEntriesRequest.t(), Keyword.t()) ::
           list(Entry.t()) | {:error, GRPC.RPCError.t()}
-  def list_directory(request, config_override \\ []) do
+  def list_directory(request, config_overrides \\ []) do
     request
-    |> stream_directory(config_override)
+    |> stream_directory(config_overrides)
     |> Enum.to_list()
   end
 

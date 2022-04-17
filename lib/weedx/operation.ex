@@ -5,7 +5,7 @@ defmodule Weedx.Operation do
 
   alias Weedx.Filer.ListEntriesRequest
 
-  @type list_directory_opts :: [
+  @type list_entries_opts :: [
           {:limit, non_neg_integer()}
           | {:last_file_name, String.t()}
         ]
@@ -20,7 +20,7 @@ defmodule Weedx.Operation do
     * `last_file_name` - Used for setting an offset for pagination, the last file name processed,
       if it's set, the new request will return all the files after this one.
   """
-  @spec list_entries(String.t(), list_directory_opts()) :: ListEntriesRequest.t()
+  @spec list_entries(String.t(), list_entries_opts()) :: ListEntriesRequest.t()
   def list_entries(directory, opts \\ []) do
     ListEntriesRequest.new!(%{
       directory: directory,
