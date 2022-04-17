@@ -4,9 +4,45 @@ defmodule Weedx do
   """
 
   use Application
-  alias Weedx.Config
-  alias Weedx.Connection
-  alias Weedx.Filer
+
+  alias Weedx.Filer.{ListEntriesRequest, ListEntriesResponse, SeaweedFiler}
+  alias Weedx.{Config, Connection}
+
+  @spec list_directory(String.t(), Keyword.t()) ::
+          list(ListEntriesResponse.t()) | {:error, GRPC.RPCError.t()}
+  def list_directory(path, config_override \\ []) do
+    conn =
+      config_override
+      |> Config.new()
+      |> get_connection()
+
+    request = ListEntriesRequest.new!(%{directory: path})
+
+    case SeaweedFiler.Stub.list_entries(conn, request) do
+      {:ok, stream} -> Enum.map(stream, fn {:ok, reply} -> reply end)
+      error -> error
+    end
+  end
+
+  defp get_connection(config) do
+    with host <- config[:host],
+         port <- config[:grpc_port],
+         {:error, :not_found} <- Connection.lookup_connection({host, port}),
+         {:ok, connection} <- GRPC.Stub.connect("#{host}:#{port}") do
+      Connection.add_connection({host, port}, connection)
+      connection
+    else
+      {:ok, connection} ->
+        connection
+
+      {:error, error} ->
+        throw("""
+        Could not connect to "#{config[:host]}:#{config[:grpc_host]}"
+
+        #{inspect(error)}
+        """)
+    end
+  end
 
   @doc false
   @impl Application
@@ -17,34 +53,5 @@ defmodule Weedx do
 
     opts = [strategy: :one_for_one, name: Weedx.Supervisor]
     Supervisor.start_link(children, opts)
-  end
-
-  def list_directories(path, config_override \\ []) do
-    conn =
-      config_override
-      |> Config.new()
-      |> get_connection()
-
-    request = Filer.ListEntriesRequest.new!(%{directory: path})
-
-    case Filer.SeaweedFiler.Stub.list_entries(conn, request) do
-      {:ok, stream} -> Enum.map(stream, fn {:ok, reply} -> reply end)
-      error -> error
-    end
-  end
-
-  defp get_connection(config) do
-    host = config[:host]
-    port = config[:grpc_port]
-
-    case Connection.lookup_connection({host, port}) do
-      {:ok, connection} ->
-        connection
-
-      _ ->
-        {:ok, channel} = GRPC.Stub.connect(host, port, [])
-        Connection.add_connection({host, port}, channel)
-        channel
-    end
   end
 end
