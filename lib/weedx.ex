@@ -5,7 +5,14 @@ defmodule Weedx do
 
   use Application
 
-  alias Weedx.Filer.{ListEntriesRequest, ListEntriesResponse, SeaweedFiler}
+  alias Weedx.Filer.{
+    ListEntriesRequest,
+    ListEntriesResponse,
+    SeaweedFiler,
+    AtomicRenameEntryRequest,
+    AtomicRenameEntryResponse
+  }
+
   alias Weedx.{Config, Connection}
 
   @spec list_directory(String.t(), Keyword.t()) ::
@@ -20,6 +27,28 @@ defmodule Weedx do
 
     case SeaweedFiler.Stub.list_entries(conn, request) do
       {:ok, stream} -> Enum.map(stream, fn {:ok, reply} -> reply end)
+      error -> error
+    end
+  end
+
+  @spec move(String.t(), String.t(), String.t(), String.t(), Keyword.t()) ::
+          :ok | {:error, GRPC.RPCError.t()}
+  def move(old_path, old_name, new_path, new_name, config_override \\ []) do
+    conn =
+      config_override
+      |> Config.new()
+      |> get_connection()
+
+    request =
+      AtomicRenameEntryRequest.new!(%{
+        old_directory: old_path,
+        old_name: old_name,
+        new_directory: new_path,
+        new_name: new_name
+      })
+
+    case SeaweedFiler.Stub.atomic_rename_entry(conn, request) do
+      {:ok, %AtomicRenameEntryResponse{}} -> :ok
       error -> error
     end
   end
