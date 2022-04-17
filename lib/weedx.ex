@@ -31,9 +31,9 @@ defmodule Weedx do
     end
   end
 
-  @spec rename_file(String.t(), String.t(), Keyword.t()) ::
+  @spec mv(String.t(), String.t(), String.t(), String.t(), Keyword.t()) ::
           :ok | {:error, GRPC.RPCError.t()}
-  def rename_file(old_name, new_name, config_override \\ []) do
+  def mv(old_path, old_name, new_path, new_name, config_override \\ []) do
     conn =
       config_override
       |> Config.new()
@@ -41,7 +41,9 @@ defmodule Weedx do
 
     request =
       AtomicRenameEntryRequest.new!(%{
+        old_directory: old_path,
         old_name: old_name,
+        new_directory: new_path,
         new_name: new_name
       })
 
