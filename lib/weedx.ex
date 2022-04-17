@@ -6,8 +6,8 @@ defmodule Weedx do
   use Application
 
   alias Weedx.Filer.{
+    Entry,
     ListEntriesRequest,
-    ListEntriesResponse,
     SeaweedFiler,
     AtomicRenameEntryRequest,
     AtomicRenameEntryResponse
@@ -15,37 +15,35 @@ defmodule Weedx do
 
   alias Weedx.{Config, Connection}
 
-  @spec list_directory(String.t(), Keyword.t()) ::
-          list(ListEntriesResponse.t()) | {:error, GRPC.RPCError.t()}
-  def list_directory(path, config_override \\ []) do
+  @spec list_directory(ListEntriesRequest.t(), Keyword.t()) ::
+          list(Entry.t()) | {:error, GRPC.RPCError.t()}
+  def list_directory(request, config_overrides \\ []) do
+    request
+    |> stream_directory(config_overrides)
+    |> Enum.to_list()
+  end
+
+  @spec stream_directory(ListEntriesRequest.t(), Keyword.t()) ::
+          list(Entry) | {:error, GRPC.RPCError.t()}
+  def stream_directory(request, config_overrides \\ []) do
     conn =
-      config_override
+      config_overrides
       |> Config.new()
       |> get_connection()
 
-    request = ListEntriesRequest.new!(%{directory: path})
-
     case SeaweedFiler.Stub.list_entries(conn, request) do
-      {:ok, stream} -> Enum.map(stream, fn {:ok, reply} -> reply end)
+      {:ok, stream} -> Stream.map(stream, fn {:ok, reply} -> reply.entry end)
       error -> error
     end
   end
 
-  @spec move(String.t(), String.t(), String.t(), String.t(), Keyword.t()) ::
+  @spec move(AtomicRenameEntryRequest.t(), Keyword.t()) ::
           :ok | {:error, GRPC.RPCError.t()}
-  def move(old_path, old_name, new_path, new_name, config_override \\ []) do
+  def move(request, config_override \\ []) do
     conn =
       config_override
       |> Config.new()
       |> get_connection()
-
-    request =
-      AtomicRenameEntryRequest.new!(%{
-        old_directory: old_path,
-        old_name: old_name,
-        new_directory: new_path,
-        new_name: new_name
-      })
 
     case SeaweedFiler.Stub.atomic_rename_entry(conn, request) do
       {:ok, %AtomicRenameEntryResponse{}} -> :ok
