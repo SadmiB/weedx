@@ -40,6 +40,5 @@ jobs:
       - run: mix format --check-formatted
         working-directory: ${{ matrix.dir }}
 
-      - if: ${{ matrix.dir == 'evercam_api' }}
-        run: mix credo
+      - run: mix credo
         working-directory: ${{ matrix.dir }}
