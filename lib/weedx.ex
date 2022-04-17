@@ -31,9 +31,9 @@ defmodule Weedx do
     end
   end
 
-  @spec mv(String.t(), String.t(), String.t(), String.t(), Keyword.t()) ::
+  @spec move(String.t(), String.t(), String.t(), String.t(), Keyword.t()) ::
           :ok | {:error, GRPC.RPCError.t()}
-  def mv(old_path, old_name, new_path, new_name, config_override \\ []) do
+  def move(old_path, old_name, new_path, new_name, config_override \\ []) do
     conn =
       config_override
       |> Config.new()
