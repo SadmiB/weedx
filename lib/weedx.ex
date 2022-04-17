@@ -5,7 +5,14 @@ defmodule Weedx do
 
   use Application
 
-  alias Weedx.Filer.{ListEntriesRequest, ListEntriesResponse, SeaweedFiler}
+  alias Weedx.Filer.{
+    ListEntriesRequest,
+    ListEntriesResponse,
+    SeaweedFiler,
+    AtomicRenameEntryRequest,
+    AtomicRenameEntryResponse
+  }
+
   alias Weedx.{Config, Connection}
 
   @spec list_directory(String.t(), Keyword.t()) ::
@@ -24,6 +31,8 @@ defmodule Weedx do
     end
   end
 
+  @spec rename_file(String.t(), String.t(), Keyword.t()) ::
+          :ok | {:error, GRPC.RPCError.t()}
   def rename_file(old_name, new_name, config_override \\ []) do
     conn =
       config_override
@@ -31,13 +40,13 @@ defmodule Weedx do
       |> get_connection()
 
     request =
-      Filer.AtomicRenameEntryRequest.new!(%{
+      AtomicRenameEntryRequest.new!(%{
         old_name: old_name,
         new_name: new_name
       })
 
-    case Filer.SeaweedFiler.Stub.atomic_rename_entry(conn, request) do
-      {:ok, %Weedx.Filer.AtomicRenameEntryResponse{}} -> :ok
+    case SeaweedFiler.Stub.atomic_rename_entry(conn, request) do
+      {:ok, %AtomicRenameEntryResponse{}} -> :ok
       error -> error
     end
   end
