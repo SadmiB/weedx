@@ -30,8 +30,8 @@ defmodule Weedx.Operation do
     })
   end
 
-  @spec move_request(String.t(), String.t()) :: AtomicRenameEntryResponse.t()
-  def move_request(old_path, new_path) do
+  @spec move(String.t(), String.t()) :: AtomicRenameEntryResponse.t()
+  def move(old_path, new_path) do
     old_dir = Path.dirname(old_path)
     old_name = Path.basename(old_path)
     new_dir = Path.dirname(new_path)

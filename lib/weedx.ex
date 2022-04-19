@@ -6,7 +6,6 @@ defmodule Weedx do
   use Application
 
   alias Weedx.Filer.{
-    Entry,
     ListEntriesRequest,
     SeaweedFiler,
     AtomicRenameEntryRequest,
@@ -15,40 +14,85 @@ defmodule Weedx do
 
   alias Weedx.{Config, Connection}
 
-  @spec list_directory(ListEntriesRequest.t(), Keyword.t()) ::
-          list(Entry.t()) | {:error, GRPC.RPCError.t()}
-  def list_directory(request, config_overrides \\ []) do
-    request
-    |> stream_directory(config_overrides)
+  @type operation() :: ListEntriesRequest.t() | AtomicRenameEntryRequest.t()
+
+  @doc """
+  Perform a filer request.
+
+  First build a request using `Weedx.Operation`, and then pass it to this
+  function to perform it.
+
+  This function takes an optional second parameter of configuration overrides.
+  This is useful if you want to have certain configuration changed on a per
+  request basis
+
+  ## Examples
+
+      Weedx.Operation.list_entries("/") |> Weedx.request()
+
+      Weedx.Operation.list_entries("/") |> Weedx.request(host: "my-new-filer.com")
+  """
+  @spec request(operation(), Keyword.t()) :: term()
+  def request(request, config_overrides \\ []) do
+    config_overrides
+    |> Config.new()
+    |> get_connection()
+    |> do_request(request)
+  end
+
+  @doc """
+  Return a stream for the filer resource.
+
+  ## Examples
+
+      Weedx.Operation.list_entries("/") |> Weedx.stream()
+  """
+  @spec stream(operation(), Keyword.t()) :: term()
+  def stream(request, config_overrides \\ []) do
+    config_overrides
+    |> Config.new()
+    |> get_connection()
+    |> do_stream(request)
+  end
+
+  defp do_request(connection, %ListEntriesRequest{} = request) do
+    connection
+    |> do_stream(request)
     |> Enum.to_list()
   end
 
-  @spec stream_directory(ListEntriesRequest.t(), Keyword.t()) ::
-          list(Entry) | {:error, GRPC.RPCError.t()}
-  def stream_directory(request, config_overrides \\ []) do
-    conn =
-      config_overrides
-      |> Config.new()
-      |> get_connection()
+  defp do_request(connection, %AtomicRenameEntryRequest{} = request) do
+    connection
+    |> SeaweedFiler.Stub.atomic_rename_entry(request)
+    |> case do
+      {:ok, %AtomicRenameEntryResponse{}} -> :ok
+      error -> error
+    end
+  end
 
-    case SeaweedFiler.Stub.list_entries(conn, request) do
+  defp do_request(_connection, request) do
+    throw("""
+    request not implemented for request:
+
+    #{inspect(request)}
+    """)
+  end
+
+  defp do_stream(connection, %ListEntriesRequest{} = request) do
+    connection
+    |> SeaweedFiler.Stub.list_entries(request)
+    |> case do
       {:ok, stream} -> Stream.map(stream, fn {:ok, reply} -> reply.entry end)
       error -> error
     end
   end
 
-  @spec move(AtomicRenameEntryRequest.t(), Keyword.t()) ::
-          :ok | {:error, GRPC.RPCError.t()}
-  def move(request, config_override \\ []) do
-    conn =
-      config_override
-      |> Config.new()
-      |> get_connection()
+  defp do_stream(_connection, request) do
+    throw("""
+    Stream operation is not supported for request:
 
-    case SeaweedFiler.Stub.atomic_rename_entry(conn, request) do
-      {:ok, %AtomicRenameEntryResponse{}} -> :ok
-      error -> error
-    end
+    #{inspect(request)}
+    """)
   end
 
   defp get_connection(config) do
