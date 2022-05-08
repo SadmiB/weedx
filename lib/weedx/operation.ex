@@ -3,7 +3,7 @@ defmodule Weedx.Operation do
   A helper module to construct requests to feed to `Weedx` functions.
   """
 
-  alias Weedx.Filer.{ListEntriesRequest, AtomicRenameEntryRequest}
+  alias Weedx.Filer.{ListEntriesRequest, AtomicRenameEntryRequest, DeleteEntryRequest}
 
   @type list_entries_opts :: [
           {:limit, non_neg_integer()}
@@ -32,8 +32,10 @@ defmodule Weedx.Operation do
 
   @spec move(String.t(), String.t()) :: AtomicRenameEntryResponse.t()
   def move(old_path, new_path) do
+    old_path  = Path.absname(old_path)
     old_dir = Path.dirname(old_path)
     old_name = Path.basename(old_path)
+    new_path  = Path.absname(new_path)
     new_dir = Path.dirname(new_path)
     new_name = Path.basename(new_path)
 
@@ -42,6 +44,28 @@ defmodule Weedx.Operation do
       old_name: old_name,
       new_directory: new_dir,
       new_name: new_name
+    })
+  end
+
+  @spec delete(String.t(), boolean(), boolean()) :: DeleteEntryRequest.t()
+  def delete(
+        path,
+        is_delete_data \\ false,
+        is_recursive \\ false,
+        ignore_recursive_error \\ false,
+        is_from_other_cluster \\ false
+      ) do
+    path  = Path.absname(path)
+    dir = Path.dirname(path)
+    name = Path.basename(path)
+
+    DeleteEntryRequest.new!(%{
+      directory: dir,
+      name: name,
+      is_delete_data: is_delete_data,
+      is_recursive: is_recursive,
+      ignore_recursive_error: ignore_recursive_error,
+      is_from_other_cluster: is_from_other_cluster
     })
   end
 end

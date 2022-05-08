@@ -9,7 +9,9 @@ defmodule Weedx do
     ListEntriesRequest,
     SeaweedFiler,
     AtomicRenameEntryRequest,
-    AtomicRenameEntryResponse
+    AtomicRenameEntryResponse,
+    DeleteEntryRequest,
+    DeleteEntryResponse
   }
 
   alias Weedx.{Config, Connection}
@@ -66,6 +68,15 @@ defmodule Weedx do
     |> SeaweedFiler.Stub.atomic_rename_entry(request)
     |> case do
       {:ok, %AtomicRenameEntryResponse{}} -> :ok
+      error -> error
+    end
+  end
+
+  defp do_request(connection, %DeleteEntryRequest{} = request) do
+    connection
+    |> SeaweedFiler.Stub.delete_entry(request)
+    |> case do
+      {:ok, %DeleteEntryResponse{}} -> :ok
       error -> error
     end
   end
