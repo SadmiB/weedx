@@ -32,10 +32,10 @@ defmodule Weedx.Operation do
 
   @spec move(String.t(), String.t()) :: AtomicRenameEntryResponse.t()
   def move(old_path, new_path) do
-    old_path  = Path.absname(old_path)
+    old_path = Path.absname(old_path)
     old_dir = Path.dirname(old_path)
     old_name = Path.basename(old_path)
-    new_path  = Path.absname(new_path)
+    new_path = Path.absname(new_path)
     new_dir = Path.dirname(new_path)
     new_name = Path.basename(new_path)
 
@@ -55,7 +55,7 @@ defmodule Weedx.Operation do
         ignore_recursive_error \\ false,
         is_from_other_cluster \\ false
       ) do
-    path  = Path.absname(path)
+    path = Path.absname(path)
     dir = Path.dirname(path)
     name = Path.basename(path)
 
