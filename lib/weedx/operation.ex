@@ -11,10 +11,10 @@ defmodule Weedx.Operation do
         ]
 
   @type delete_entry_opts :: [
-      {:is_recursive, boolean()}
-      | {:ignore_recursive_error, boolean()}
-      | {:is_from_other_cluster, boolean()}
-  ]
+          {:is_recursive, boolean()}
+          | {:ignore_recursive_error, boolean()}
+          | {:is_from_other_cluster, boolean()}
+        ]
 
   @doc """
   Create a list entries request for a directory. The result are ordered by filename.
