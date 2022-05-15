@@ -10,6 +10,12 @@ defmodule Weedx.Operation do
           | {:last_file_name, String.t()}
         ]
 
+  @type delete_entry_opts :: [
+      {:is_recursive, boolean()}
+      | {:ignore_recursive_error, boolean()}
+      | {:is_from_other_cluster, boolean()}
+  ]
+
   @doc """
   Create a list entries request for a directory. The result are ordered by filename.
 
@@ -47,17 +53,19 @@ defmodule Weedx.Operation do
     })
   end
 
-  @spec delete(String.t(), boolean(), boolean()) :: DeleteEntryRequest.t()
+  @spec delete(String.t(), boolean(), delete_entry_opts()) :: DeleteEntryRequest.t()
   def delete(
         path,
-        is_delete_data \\ false,
-        is_recursive \\ false,
-        ignore_recursive_error \\ false,
-        is_from_other_cluster \\ false
+        is_delete_data,
+        opts \\ []
       ) do
     path = Path.absname(path)
     dir = Path.dirname(path)
     name = Path.basename(path)
+
+    is_recursive = Keyword.get(opts, :is_recursive, false)
+    ignore_recursive_error = Keyword.get(opts, :ignore_recursive_error, false)
+    is_from_other_cluster = Keyword.get(opts, :is_from_other_cluster, false)
 
     DeleteEntryRequest.new!(%{
       directory: dir,
