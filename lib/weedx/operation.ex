@@ -11,9 +11,9 @@ defmodule Weedx.Operation do
         ]
 
   @type delete_entry_opts :: [
-          {:is_recursive, boolean()}
+          {:recursive, boolean()}
           | {:ignore_recursive_error, boolean()}
-          | {:is_from_other_cluster, boolean()}
+          | {:from_other_cluster, boolean()}
         ]
 
   @doc """
@@ -56,24 +56,24 @@ defmodule Weedx.Operation do
   @spec delete(String.t(), boolean(), delete_entry_opts()) :: DeleteEntryRequest.t()
   def delete(
         path,
-        is_delete_data,
+        delete_data,
         opts \\ []
       ) do
     path = Path.absname(path)
     dir = Path.dirname(path)
     name = Path.basename(path)
 
-    is_recursive = Keyword.get(opts, :is_recursive, false)
+    recursive = Keyword.get(opts, :recursive, false)
     ignore_recursive_error = Keyword.get(opts, :ignore_recursive_error, false)
-    is_from_other_cluster = Keyword.get(opts, :is_from_other_cluster, false)
+    from_other_cluster = Keyword.get(opts, :from_other_cluster, false)
 
     DeleteEntryRequest.new!(%{
       directory: dir,
       name: name,
-      is_delete_data: is_delete_data,
-      is_recursive: is_recursive,
+      is_delete_data: delete_data,
+      is_recursive: recursive,
       ignore_recursive_error: ignore_recursive_error,
-      is_from_other_cluster: is_from_other_cluster
+      is_from_other_cluster: from_other_cluster
     })
   end
 end
