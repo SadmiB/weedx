@@ -23,7 +23,7 @@ defmodule Weedx.MixProject do
   defp deps do
     [
       {:grpc, github: "tony612/grpc-elixir"},
-      {:protobuf, "~> 0.9.0"},
+      {:protobuf, "~> 0.10.0"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
   end
