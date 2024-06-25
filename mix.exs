@@ -22,7 +22,7 @@ defmodule Weedx.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:grpc, github: "tony612/grpc-elixir"},
+      {:grpc, "~> 0.5.0"},
       {:protobuf, "~> 0.11.0"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
