@@ -23,7 +23,7 @@ defmodule Weedx.MixProject do
   defp deps do
     [
       {:grpc, "~> 0.5.0"},
-      {:protobuf, "~> 0.11.0"},
+      {:protobuf, "~> 0.12.0"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
   end
